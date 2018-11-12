@@ -1,0 +1,3 @@
+[submodule "src/debug_nodes/libgamepad"]
+	path = src/debug_nodes/libgamepad
+	url = https://github.com/mtwilliams/libgamepad.git

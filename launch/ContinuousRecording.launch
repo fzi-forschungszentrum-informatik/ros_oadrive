@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BEGIN LICENSE BLOCK -->
+<!-- END LICENSE BLOCK -->
+
+<launch>
+  <arg name="everything" default="True" />
+
+  <!-- Hack to create the tmp folder .. -->
+  <param name="mkdir_tmp" command="mkdir -m 777 -p /tmp/rosbags" />
+
+  <!-- Record 30 bags each 1m and then delete the old ones -->
+  <node unless="$(arg everything)" pkg="rosbag" type="record" name="continuous_recording" output="screen"
+    args="record --split --duration 1m --max-splits 5 -o /tmp/rosbags/continuous /aadc/front_cam /aadc/front/birdview /aadc/marker_position /aadc/objects/traffic_sign /aadc/pose_2d /aadc/ultrasonic /aadc/jury/current_maneuver /aadc/jury/event /aadc/jury/status /tf /tf_static /aadc/opendrive_map" />
+  <node if="$(arg everything)" pkg="rosbag" type="record" name="continuous_recording" output="screen"
+      args="record --split --duration 1m --max-splits 5 -o /tmp/rosbags/continuous -a -x '.*theora.*|.*compressed.*|/aadc/debug_front|/aadc/birdview'" />
+
+</launch>
+

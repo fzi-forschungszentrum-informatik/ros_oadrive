@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!-- BEGIN LICENSE BLOCK -->
+<!-- END LICENSE BLOCK -->
+
+<!--
+  Main launch file launching the SirenAudioDetectorNode
+-->
+
+<launch>
+
+  <!-- ### parameter ############################################################## -->
+
+  <!-- A flag that can enable additional debug measures. -->
+  <arg name="enable_debug" default="False" />
+  <!-- this launch prefix is chosen if enable_debug is True -->
+  <arg name="debug_prefix" default="xterm -e gdb --ex run --args"/>
+  <!-- this launch prefix is chosen if enable_debug is False (default).
+       Choose 'xterm -e' to start all nodes in a separate window -->
+  <arg name="normal_prefix" default=""/>
+
+  <!-- Chooses launch_prefix value according to debug_prefix.
+       This allows us to switch easily between two modes of launch_prefixes
+       for all relevant nodes.-->
+  <arg if="$(arg enable_debug)" name="launch_prefix" value="$(arg debug_prefix)"/>
+  <arg unless="$(arg enable_debug)" name="launch_prefix" value="$(arg normal_prefix)"/>
+
+  <arg if="$(arg enable_debug)" name="output" value="screen"/>
+  <arg unless="$(arg enable_debug)" name="output" value="log" />
+
+
+  <arg name="device" default=""/>
+  <arg name="channels" default="1"/>
+  <arg name="sample_rate" default="44100"/>
+  <arg name="format" default="wave"/>
+  <arg name="ns" default="audio"/>
+
+
+
+
+  <!-- ### ros ############################################################## -->
+
+  <!--Main Node-->
+ 
+  <group ns="$(arg ns)">
+    <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
+      <param name="bitrate" value="128"/>
+      <param name="device" value="$(arg device)"/>
+      <param name="channels" value="$(arg channels)"/>
+      <param name="sample_rate" value="$(arg sample_rate)"/>
+      <param name="format" value="$(arg format)"/>
+    </node>
+  </group>
+  
+  <node name="SirenAudioDetectorNode" pkg="ros_oadrive" type="SirenAudioDetectorNode" output="screen" launch-prefix="$(arg launch_prefix)">
+  </node>
+
+</launch>

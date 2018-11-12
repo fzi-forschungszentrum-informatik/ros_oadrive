@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!-- BEGIN LICENSE BLOCK -->
+<!-- END LICENSE BLOCK -->
+
+<!--
+  Main launch file launching the test executable
+-->
+
+<launch>
+
+  <!-- ### parameter ############################################################## -->
+
+  <!-- A flag that can enable additional debug measures. -->
+  <arg name="enable_debug" default="False" />
+  <!-- this launch prefix is chosen if enable_debug is True -->
+  <arg name="debug_prefix" default="xterm -e gdb --ex run --args"/>
+  <!-- this launch prefix is chosen if enable_debug is False (default).
+       Choose 'xterm -e' to start all nodes in a separate window -->
+  <arg name="normal_prefix" default=""/>
+
+  <!-- Chooses launch_prefix value according to debug_prefix.
+       This allows us to switch easily between two modes of launch_prefixes
+       for all relevant nodes.-->
+  <arg if="$(arg enable_debug)" name="launch_prefix" value="$(arg debug_prefix)"/>
+  <arg unless="$(arg enable_debug)" name="launch_prefix" value="$(arg normal_prefix)"/>
+
+  <arg if="$(arg enable_debug)" name="output" value="screen"/>
+  <arg unless="$(arg enable_debug)" name="output" value="log" />
+
+  <arg name="config_folder" value="$(env AADC_CONFIG_FOLDER_PATH)"/>
+
+  <arg name="car_name" value="$(env AADC_CONFIG_CAR_NAME)"/>
+
+
+
+  <!-- ### ros ############################################################## -->
+
+  <node name="RoadPerceptionNode" pkg="ros_oadrive" type="RoadPerceptionNode" output="screen" launch-prefix="$(arg launch_prefix)">
+    <param name="config_folder" type="string" value="$(arg config_folder)" />
+    <param name="car_name" type="string" value="$(arg car_name)" />
+  </node>
+
+</launch>

@@ -1,0 +1,7 @@
+bags/
+local_manager_profile.nmprofile
+*.pyc
+
+*.vscode
+
+tools/interactive_birdeye_calibration/build
